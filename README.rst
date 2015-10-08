@@ -2,7 +2,7 @@ tormysql
 ========
 
 .. image:: https://travis-ci.org/mosquito/tormysql.svg
-    :target: https://travis-ci.org/mosquito/tormysql
+    :target: https://github.com/snower/TorMySQL
 
 Tornado asynchronous MySQL Driver.
 
@@ -32,7 +32,7 @@ Examples
 ::
 
     from tornado.ioloop import IOLoop
-    from tornado.get import coroutine
+    from tornado import gen
     import tormysql
 
     pool = tormysql.ConnectionPool(
@@ -45,7 +45,7 @@ Examples
         charset = "utf8"
     )
 
-    @coroutine
+    @gen.coroutine
     def test():
         with (yield pool.Connection()) as conn:
             with conn.cursor() as cursor:
