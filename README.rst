@@ -4,7 +4,14 @@ mytor
 .. image:: https://travis-ci.org/mosquito/mytor.svg
     :target: https://travis-ci.org/mosquito/mytor
 
-Tornado asynchronous MySQL Driver
+Tornado asynchronous MySQL Driver.
+
+DEPRICATED
+----------
+
+This fork is depricated. See original_.
+
+.. _original: https://github.com/snower/TorMySQL
 
 About
 =====
