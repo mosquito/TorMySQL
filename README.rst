@@ -6,12 +6,9 @@ mytor
 
 Tornado asynchronous MySQL Driver.
 
-DEPRICATED
-----------
+This if fork of TorMySQL_.
 
-This fork is depricated. See original_.
-
-.. _original: https://github.com/snower/TorMySQL
+.. _TorMySQL: https://github.com/snower/TorMySQL
 
 About
 =====
@@ -55,7 +52,6 @@ Examples
                 datas = cursor.fetchall()
 
         print datas
-        
         yield pool.close()
 
     IOLoop.current().run_sync(test)

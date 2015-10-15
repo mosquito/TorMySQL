@@ -1,17 +1,14 @@
-# -*- coding: utf-8 -*-
-# 14-8-8
-# create by: snower
-
+# encoding: utf-8
 from setuptools import setup
-
+from mytor import version
 
 setup(
     name='mytor',
-    version='0.1.4',
+    version=version,
     packages=['mytor'],
     install_requires=[
         'tornado>=4.1',
-        'PyMySQL>=0.6.7',
+        'PyMySQL==0.6.7',
         'greenlet>=0.4.2',
     ],
     author=['snower', 'mosquito'],
@@ -21,7 +18,7 @@ setup(
     keywords=[
         "tornado", "mysql"
     ],
-    description='Tornado asynchronous MySQL Driver',
+    description='Tornado asynchronous MySQL Driver [fork of TorMysql]',
     long_description=open("README.rst").read(),
     zip_safe=False,
 )
