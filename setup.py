@@ -1,10 +1,9 @@
 # encoding: utf-8
 from setuptools import setup
-from mytor import version
 
 setup(
     name='mytor',
-    version=version,
+    version='0.2.4',
     packages=['mytor'],
     install_requires=[
         'tornado>=4.1',
