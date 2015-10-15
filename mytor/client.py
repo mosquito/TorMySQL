@@ -80,7 +80,7 @@ class Client(object):
         if issubclass(cursor_cls, Cursor):
             return cursor_cls(cursor)
         else:
-            return cursor.__tormysql_class__(cursor)
+            return cursor.__mytor_class__(cursor)
 
     def query(self, sql, unbuffered=False):
         return async_call_method(self._connection.query, sql, unbuffered)

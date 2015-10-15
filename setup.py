@@ -6,9 +6,9 @@ from setuptools import setup
 
 
 setup(
-    name='tormysql',
+    name='mytor',
     version='0.1.4',
-    packages=['tormysql'],
+    packages=['mytor'],
     install_requires=[
         'tornado>=4.1',
         'PyMySQL>=0.6.7',
@@ -16,7 +16,7 @@ setup(
     ],
     author=['snower', 'mosquito'],
     author_email=['sujian199@gmail.com', 'me@mosquito.su'],
-    url='https://github.com/snower/TorMySQL',
+    url='https://github.com/mosquito/mytor',
     license='MIT',
     keywords=[
         "tornado", "mysql"
