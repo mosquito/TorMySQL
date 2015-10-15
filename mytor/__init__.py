@@ -29,7 +29,7 @@ from .cursor import Cursor, DictCursor, SSCursor, SSDictCursor
 from .pool import ConnectionPool
 
 
-version = "0.2.4"
+version = "0.2.5"
 version_info = tuple(map(int, version.split('.')))
 
 
