@@ -77,13 +77,13 @@ class Cursor(object):
             raise CursorNotReadAllDataError("if cursor not read all data, the connection next query is error")
         self.close()
 
-setattr(OriginCursor, "__tormysql_class__", Cursor)
+setattr(OriginCursor, "__mytor_class__", Cursor)
 
 
 class DictCursor(Cursor):
     __delegate_class__ = OriginDictCursor
 
-setattr(OriginDictCursor, "__tormysql_class__", DictCursor)
+setattr(OriginDictCursor, "__mytor_class__", DictCursor)
 
 
 class SSCursor(Cursor):
@@ -128,10 +128,10 @@ class SSCursor(Cursor):
     def __exit__(self, *exc_info):
         raise AttributeError("SSCursor not support with statement")
 
-setattr(OriginSSCursor, "__tormysql_class__", SSCursor)
+setattr(OriginSSCursor, "__mytor_class__", SSCursor)
 
 
 class SSDictCursor(SSCursor):
     __delegate_class__ = OriginSSDictCursor
 
-setattr(OriginSSDictCursor, "__tormysql_class__", SSDictCursor)
+setattr(OriginSSDictCursor, "__mytor_class__", SSDictCursor)

@@ -1,9 +1,9 @@
-'''
-TorMySQL: presents a Tornado Future-based API and greenlet for non-blocking access to MySQL.
+"""
+mytor: presents a Tornado Future-based API and greenlet for non-blocking access to MySQL.
 
 The MIT License (MIT)
 
-Copyright (c) 2014, 2015 TorMySQL contributors
+Copyright (c) 2014, 2015 mytor contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,20 +21,20 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
+SOFTWARE. """
+
 
 from .client import Client
 from .cursor import Cursor, DictCursor, SSCursor, SSDictCursor
 from .pool import ConnectionPool
 
-version = "0.1.4"
-version_info = (0, 1, 4)
+
+version = "0.2.4"
+version_info = tuple(map(int, version.split('.')))
 
 
 def connect(*args, **kwargs):
-    client = Client(*args, **kwargs)
-    return client.connect()
+    return Client(*args, **kwargs).connect()
 
 
 Connection = connect

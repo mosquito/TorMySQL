@@ -2,7 +2,7 @@
 # encoding: utf-8
 import os
 from tornado.testing import gen_test
-from tormysql.cursor import SSDictCursor
+from mytor.cursor import SSDictCursor
 from . import BaseTestCase
 
 

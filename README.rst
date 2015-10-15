@@ -1,8 +1,8 @@
-TorMySQL
-========
+mytor
+=====
 
-.. image:: https://travis-ci.org/snower/TorMySQL.svg
-    :target: https://travis-ci.org/snower/TorMySQL
+.. image:: https://travis-ci.org/mosquito/mytor.svg
+    :target: https://travis-ci.org/mosquito/mytor
 
 Tornado asynchronous MySQL Driver.
 
@@ -16,7 +16,7 @@ This fork is depricated. See original_.
 About
 =====
 
-tormysql - presents a Tornado Future-based API and greenlet for
+mytor - presents a Tornado Future-based API and greenlet for
 non-blocking access to MySQL.
 
 Installation
@@ -24,28 +24,30 @@ Installation
 
 ::
 
-    pip install TorMySQL
+    pip install mytor
 
 Examples
 ========
 
 ::
 
+    import mytor
     from tornado.ioloop import IOLoop
-    from tornado import gen
-    import tormysql
+    from tornado.gen import coroutine
 
-    pool = tormysql.ConnectionPool(
-        max_connections = 20, #max open connections
-        idle_seconds = 7200, #conntion idle timeout time, 0 is not timeout
+
+    pool = mytor.ConnectionPool(
+        max_connections = 20,       #max open connections
+        idle_seconds = 7200,        #conntion idle timeout time, 0 is not timeout
         host = "127.0.0.1",
         user = "root",
-        passwd = "TEST",
+        passwd = "secret",
         db = "test",
         charset = "utf8"
     )
 
-    @gen.coroutine
+
+    @coroutine
     def test():
         with (yield pool.Connection()) as conn:
             with conn.cursor() as cursor:
@@ -56,5 +58,4 @@ Examples
         
         yield pool.close()
 
-    ioloop = IOLoop.instance()
-    ioloop.run_sync(test)
+    IOLoop.current().run_sync(test)
