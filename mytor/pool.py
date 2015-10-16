@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-# 14-8-8
-# create by: snower
+# encoding: utf-8
 
-'''
-MySQL asynchronous client pool.
-'''
+''' MySQL asynchronous client pool. '''
 
 import time
 import logging
@@ -12,6 +8,7 @@ from collections import deque
 from tornado.concurrent import Future
 from tornado.ioloop import IOLoop
 from .client import Client
+
 
 class ConnectionPoolClosedError(Exception):
     pass
