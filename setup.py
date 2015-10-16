@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='mytor',
-    version='0.2.5',
+    version='0.2.6',
     packages=['mytor'],
     install_requires=[
         'tornado>=4.1',
