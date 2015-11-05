@@ -1,13 +1,7 @@
-# -*- coding: utf-8 -*-
-# 14-8-8
-# create by: snower
-
-'''
-MySQL asynchronous client.
-'''
-
+# encoding: utf-8
 from tornado.ioloop import IOLoop
-from tornado.gen import Future
+from tornado.gen import Future, coroutine
+from tornado.locks import Lock
 from .util import async_call_method
 from .connections import Connection
 from .cursor import Cursor
@@ -20,27 +14,36 @@ class Client(object):
         self._connection = None
         self._closed = False
         self._close_callback = None
+        self._io_loop = kwargs.pop('io_loop', None)
+
+        self.__cursor_lock = Lock()
+
+        if self._io_loop is None:
+            self._io_loop = IOLoop.current()
 
         if "cursorclass" in kwargs and issubclass(kwargs["cursorclass"], Cursor):
             kwargs["cursorclass"] = kwargs["cursorclass"].__delegate_class__
 
     def connect(self):
         future = Future()
-        def _(connection_future):
+
+        def on_connect(connection_future):
             if connection_future._exc_info is None:
                 self._connection = connection_future._result
                 self._connection.set_close_callback(self.on_close)
                 future.set_result(self)
             else:
                 future.set_exc_info(connection_future._exc_info)
+
         connection_future = async_call_method(Connection, *self._args, **self._kwargs)
-        IOLoop.current().add_future(connection_future, _)
+
+        IOLoop.current().add_future(connection_future, on_connect)
         return future
 
     def on_close(self):
         self._closed = True
-        if self._close_callback and callable(self._close_callback):
-            self._close_callback(self)
+
+        callable(self._close_callback) and self._close_callback(self)
         self._close_callback = None
 
     def set_close_callback(self, callback):
@@ -69,12 +72,19 @@ class Client(object):
     def select_db(self, db):
         return async_call_method(self._connection.select_db, db)
 
+    @coroutine
     def cursor(self, cursor_cls=None):
         if cursor_cls is None:
             cursor_cls = self._connection.cursorclass
 
+        try:
+            yield self.__cursor_lock.acquire(1)
+        except TimeoutError:
+            raise RuntimeError("Connection might be provide only once opened cursor")
+
         cursor = self._connection.cursor(
-            cursor_cls.__delegate_class__ if cursor_cls and issubclass(cursor_cls, Cursor) else cursor_cls
+            cursor_cls.__delegate_class__ if cursor_cls and issubclass(cursor_cls, Cursor) else cursor_cls,
+            self.__cursor_lock.release
         )
 
         if issubclass(cursor_cls, Cursor):

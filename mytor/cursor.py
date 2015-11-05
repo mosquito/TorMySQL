@@ -3,22 +3,27 @@
 # create by: snower
 
 from tornado.concurrent import Future
+from tornado.ioloop import IOLoop
 from pymysql.cursors import (
     Cursor as OriginCursor, DictCursor as OriginDictCursor,
     SSCursor as OriginSSCursor, SSDictCursor as OriginSSDictCursor)
 from .util import async_call_method
 
+
 class CursorNotReadAllDataError(Exception):
     pass
+
 
 class CursorNotIterError(Exception):
     pass
 
+
 class Cursor(object):
     __delegate_class__ = OriginCursor
 
-    def __init__(self, cursor):
+    def __init__(self, cursor, release_lock):
         self._cursor = cursor
+        self._release_lock = release_lock
 
     def __del__(self):
         if self._cursor:
@@ -32,6 +37,7 @@ class Cursor(object):
         else:
             future = async_call_method(self._cursor.close)
         self._cursor = None
+        future.add_done_callback(self._release_lock)
         return future
 
     def nextset(self):
@@ -47,7 +53,7 @@ class Cursor(object):
         return async_call_method(self._cursor.executemany, query, args)
 
     def callproc(self, procname, args=()):
-        return async_call_method(self._cursor.procname, procname, args)
+        return async_call_method(self._cursor.callproc, procname, args)
 
     def fetchone(self):
         return self._cursor.fetchone()
@@ -97,6 +103,7 @@ class SSCursor(Cursor):
         else:
             future = async_call_method(self._cursor.close)
         self._cursor = None
+        future.add_done_callback(self._release_lock)
         return future
 
     def read_next(self):
@@ -122,11 +129,9 @@ class SSCursor(Cursor):
             return future
         return iter(next, None)
 
-    def __enter__(self):
-        raise AttributeError("SSCursor not support with statement")
-
     def __exit__(self, *exc_info):
-        raise AttributeError("SSCursor not support with statement")
+        IOLoop.current().add_callback(self.close)
+
 
 setattr(OriginSSCursor, "__mytor_class__", SSCursor)
 
