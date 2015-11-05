@@ -29,7 +29,7 @@ from .cursor import Cursor, DictCursor, SSCursor, SSDictCursor
 from .pool import ConnectionPool
 
 
-version_info = (0, 2, 6)
+version_info = (0, 2, 7)
 version = ".".join(map(str, version_info))
 
 
