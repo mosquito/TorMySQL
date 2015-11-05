@@ -3,10 +3,10 @@
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-from mytor.sqlalchemy import create_engine
+from mytor.sa import create_engine
 
 
-engine = create_engine('mysql+mytor://root@127.0.0.1/test')
+engine = create_engine('mysql://root@127.0.0.1/test')
 
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
