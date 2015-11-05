@@ -16,7 +16,7 @@ class TestWarnings(BaseTestCase):
         name = uuid.uuid4().hex
         sql = 'DROP TABLE IF EXISTS test_{name}'.format(name=name)
         with (yield self.pool.Connection()) as connection:
-            with (yield connection.cursor()) as cursor:
+            with connection.cursor() as cursor:
                 yield cursor.execute(sql)
 
         warnings = yield connection.show_warnings()

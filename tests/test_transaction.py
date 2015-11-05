@@ -9,7 +9,7 @@ class TestTransactions(BaseTestCase):
     def test0(self):
         name = str(uuid.uuid4().hex)
         connection = yield self.pool.Connection()
-        cursor = yield connection.cursor()
+        cursor = connection.cursor()
         yield cursor.execute("CREATE TABLE test_{name} (id INT, data VARCHAR(100))".format(name=name))
         yield cursor.close()
         try:

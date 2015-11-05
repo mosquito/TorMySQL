@@ -18,7 +18,7 @@ class TestLocale(BaseTestCase):
             with (yield self.pool.Connection()) as connection:
                 yield connection.set_charset(charset)
 
-                with (yield connection.cursor()) as cursor:
+                with connection.cursor() as cursor:
                     yield cursor.execute("SHOW VARIABLES LIKE 'character_set_client'")
                     data = cursor.fetchone()
                     self.assertEqual(data[1], charset)

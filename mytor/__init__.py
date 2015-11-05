@@ -29,8 +29,8 @@ from .cursor import Cursor, DictCursor, SSCursor, SSDictCursor
 from .pool import ConnectionPool
 
 
-version = "0.2.5"
-version_info = tuple(map(int, version.split('.')))
+version_info = (0, 2, 6)
+version = ".".join(map(str, version_info))
 
 
 def connect(*args, **kwargs):

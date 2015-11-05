@@ -1,7 +1,7 @@
 # encoding: utf-8
+from multiprocessing import RLock
 from tornado.ioloop import IOLoop
-from tornado.gen import Future, coroutine, Return, TimeoutError
-from tornado.locks import Lock
+from tornado.gen import Future
 from .util import async_call_method
 from .connections import Connection
 from .cursor import Cursor
@@ -16,7 +16,7 @@ class Client(object):
         self._close_callback = None
         self._io_loop = kwargs.pop('io_loop', None)
 
-        self.__cursor_lock = Lock()
+        self.__cursor_lock = RLock()
 
         if self._io_loop is None:
             self._io_loop = IOLoop.current()
@@ -43,7 +43,9 @@ class Client(object):
     def on_close(self):
         self._closed = True
 
-        callable(self._close_callback) and self._close_callback(self)
+        if self._close_callback and callable(self._close_callback):
+            self._close_callback(self)
+
         self._close_callback = None
 
     def set_close_callback(self, callback):
@@ -72,22 +74,24 @@ class Client(object):
     def select_db(self, db):
         return async_call_method(self._connection.select_db, db)
 
-    @coroutine
     def cursor(self, cursor_cls=None):
         if cursor_cls is None:
             cursor_cls = self._connection.cursorclass
 
-        try:
-            yield self.__cursor_lock.acquire(1)
-        except TimeoutError:
-            raise RuntimeError("Connection might be provide only once opened cursor")
+        if not self.__cursor_lock.acquire(0):
+            raise RuntimeError("Connection might provide only one opened cursor")
 
-        cursor = yield async_call_method(
-            self._connection.cursor,
-            cursor_cls.__delegate_class__ if cursor_cls and issubclass(cursor_cls, Cursor) else cursor_cls,
-        )
+        if cursor_cls and issubclass(cursor_cls, Cursor):
+            original_cursor_cls = cursor_cls.__delegate_class__
+        else:
+            original_cursor_cls = cursor_cls
 
-        raise Return(cursor)
+        cursor = self._connection.cursor(original_cursor_cls)
+        cursor_cls = cursor_cls if issubclass(cursor_cls, Cursor) else cursor.__mytor_class__
+
+        cursor = cursor_cls(cursor)
+        cursor._release_lock = lambda *a: self.__cursor_lock.release()
+        return cursor
 
     def query(self, sql, unbuffered=False):
         return async_call_method(self._connection.query, sql, unbuffered)

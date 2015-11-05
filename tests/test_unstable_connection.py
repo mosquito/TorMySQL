@@ -48,7 +48,7 @@ class TestThroughProxy(BaseTestCase):
     @gen_test
     def test_connection_closing(self):
         connection = yield Connection(**self.PARAMS)
-        cursor = yield connection.cursor()
+        cursor = connection.cursor()
         self._close_proxy_sessions()
         try:
             yield cursor.execute('SELECT 1')
@@ -95,7 +95,7 @@ class TestThroughProxy(BaseTestCase):
         )
         try:
             with (yield pool.Connection()) as connect:
-                with (yield connect.cursor()) as cursor:
+                with connect.cursor() as cursor:
                     self._close_proxy_sessions()
                     yield cursor.execute("SELECT 1 as test")
         except (OperationalError, ConnectionNotFoundError) as e:
