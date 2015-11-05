@@ -143,7 +143,7 @@ class Connection(_Connection):
 
         child_gr = greenlet.getcurrent()
         main = child_gr.parent
-        assert main is not None, "Execut must be running in child greenlet"
+        assert main is not None, "Execute must be running in child greenlet"
 
         def read_callback(future):
             if future._exc_info is not None:

@@ -13,12 +13,12 @@ class TestCreateDB(BaseTestCase):
         with (yield self.pool.Connection()) as connection:
             yield connection.begin()
             try:
-                with connection.cursor() as cursor:
+                with (yield connection.cursor()) as cursor:
                     yield cursor.execute("CREATE DATABASE {0}".format(name))
 
                 yield connection.select_db(name)
 
-                with connection.cursor() as cursor:
+                with (yield connection.cursor()) as cursor:
                     yield cursor.execute('SHOW TABLES')
                     data = cursor.fetchall()
                     self.assertEqual(data, tuple())

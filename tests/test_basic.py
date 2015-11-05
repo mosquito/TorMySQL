@@ -8,7 +8,7 @@ class TestBasic(BaseTestCase):
     def test0(self):
         sql = "select * from test limit 1"
         connection = yield self.pool.Connection()
-        cursor = connection.cursor()
+        cursor = yield connection.cursor()
         yield cursor.execute(sql)
 
         datas = cursor.fetchall()

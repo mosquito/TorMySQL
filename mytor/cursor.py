@@ -20,10 +20,10 @@ class CursorNotIterError(Exception):
 
 class Cursor(object):
     __delegate_class__ = OriginCursor
+    _release_lock = None
 
-    def __init__(self, cursor, release_lock):
+    def __init__(self, cursor):
         self._cursor = cursor
-        self._release_lock = release_lock
 
     def __del__(self):
         if self._cursor:

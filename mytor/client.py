@@ -1,6 +1,6 @@
 # encoding: utf-8
 from tornado.ioloop import IOLoop
-from tornado.gen import Future, coroutine
+from tornado.gen import Future, coroutine, Return, TimeoutError
 from tornado.locks import Lock
 from .util import async_call_method
 from .connections import Connection
@@ -82,15 +82,12 @@ class Client(object):
         except TimeoutError:
             raise RuntimeError("Connection might be provide only once opened cursor")
 
-        cursor = self._connection.cursor(
+        cursor = yield async_call_method(
+            self._connection.cursor,
             cursor_cls.__delegate_class__ if cursor_cls and issubclass(cursor_cls, Cursor) else cursor_cls,
-            self.__cursor_lock.release
         )
 
-        if issubclass(cursor_cls, Cursor):
-            return cursor_cls(cursor)
-        else:
-            return cursor.__mytor_class__(cursor)
+        raise Return(cursor)
 
     def query(self, sql, unbuffered=False):
         return async_call_method(self._connection.query, sql, unbuffered)

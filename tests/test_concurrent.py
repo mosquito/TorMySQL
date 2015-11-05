@@ -15,6 +15,6 @@ class TestWithWith(BaseTestCase):
     def _exec(self):
         sql = "select sleep(1)"
         with (yield self.pool.Connection()) as connection:
-            with connection.cursor() as cursor:
+            with (yield connection.cursor()) as cursor:
                 yield cursor.execute(sql)
                 datas = cursor.fetchall()
